@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <title>Магма Лукойл - Экспресс-замена масла</title>
+  
+  <!-- Main stylesheet (Vanilla CSS) -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="header-brand">
+      <div class="brand-info">
+        <img src="assets/magma_logo.png" alt="Магма Лукойл" class="brand-logo" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+        <div id="logo-fallback" class="brand-logo" style="display:none; align-items:center; justify-content:center; background:linear-gradient(135deg, #e30613, #ffca00); color:white; font-weight:900; font-size:18px;">М</div>
+        <div>
+          <h1 class="brand-title gradient-text">Магма Лукойл</h1>
+          <p class="brand-subtitle">Махачкала • Экспресс-пункт</p>
+        </div>
+      </div>
+      <div class="status-badge" id="business-status">
+        <span class="status-dot"></span>
+        <span id="status-text">Открыто до 20:00</span>
+      </div>
+    </header>
+
+    <!-- MAIN VIEW: HOME -->
+    <main id="view-home" class="page active">
+      
+      <!-- Promo Banner -->
+      <section class="promo-card">
+        <img src="assets/magma_banner.png" alt="Замена масла Махачкала" class="promo-img" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=800';">
+        <div class="promo-overlay">
+          <span class="promo-tag">Спецпредложение</span>
+          <h2 class="promo-title">Фильтр в подарок при покупке масла!</h2>
+          <p class="promo-desc">Замена масла за 15 минут без очередей</p>
+        </div>
+      </section>
+
+      <!-- Quick Ratings and Stats -->
+      <section class="quick-stats">
+        <div class="stat-item glass-panel">
+          <span class="stat-value">5.0 <i class="fa-solid fa-star"></i></span>
+          <span class="stat-label">Рейтинг</span>
+        </div>
+        <div class="stat-item glass-panel">
+          <span class="stat-value">55 <i class="fa-solid fa-user-check" style="color:var(--accent-color);"></i></span>
+          <span class="stat-label">Оценок</span>
+        </div>
+        <div class="stat-item glass-panel">
+          <span class="stat-value">15 м <i class="fa-solid fa-clock" style="color:var(--accent-color);"></i></span>
+          <span class="stat-label">Замена</span>
+        </div>
+      </section>
+
+      <!-- Core Info (Address, Contacts) -->
+      <section class="card-section">
+        <div class="section-header">
+          <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> О пункте</h3>
+        </div>
+        
+        <div class="list-card glass-panel">
+          
+          <div class="info-row" id="info-address">
+            <div class="info-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="info-details">
+              <span class="info-label">Адрес</span>
+              <p class="info-value">ул. Шеболдаева, 43, Махачкала</p>
+            </div>
+            <div class="info-action"><i class="fa-solid fa-chevron-right"></i></div>
+          </div>
+
+          <div class="info-row" id="info-phone">
+            <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="info-details">
+              <span class="info-label">Телефон</span>
+              <p class="info-value">+7 (928) 575-06-06</p>
+            </div>
+            <div class="info-action"><i class="fa-solid fa-phone-flip"></i></div>
+          </div>
+
+          <div class="info-row" id="info-hours">
+            <div class="info-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="info-details">
+              <span class="info-label">Время работы</span>
+              <p class="info-value">Ежедневно с 09:00 до 20:00</p>
+            </div>
+          </div>
+
+          <div class="info-row" id="info-website">
+            <div class="info-icon"><i class="fa-solid fa-globe"></i></div>
+            <div class="info-details">
+              <span class="info-label">Сайт</span>
+              <p class="info-value">magma-lukojl.clients.site</p>
+            </div>
+            <div class="info-action"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Map Block -->
+      <section class="card-section">
+        <div class="section-header">
+          <h3 class="section-title"><i class="fa-solid fa-compass"></i> Как добраться</h3>
+          <span style="font-size:11px; color:var(--subtitle-color); font-weight:700; text-transform:uppercase;">Ул. Коркмасова, 140 (67 м)</span>
+        </div>
+        
+        <div class="map-container-wrapper">
+          <div id="map"></div>
+          <button class="map-overlay-btn" id="btn-open-route">
+            <i class="fa-solid fa-route"></i> Маршрут
+          </button>
+        </div>
+      </section>
+
+      <!-- CTA Book Button -->
+      <button class="btn btn-primary" id="btn-go-to-booking" style="margin-top: 10px;">
+        <i class="fa-solid fa-calendar-check"></i> Записаться на замену масла
+      </button>
+
+    </main>
+
+    <!-- VIEW 2: CATALOG -->
+    <main id="view-catalog" class="page">
+      
+      <!-- Search -->
+      <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" placeholder="Поиск масел, фильтров, аксессуаров..." class="search-input" id="catalog-search">
+      </div>
+
+      <!-- Categories Pills Slider -->
+      <div class="categories-slider" id="catalog-categories">
+        <button class="category-pill active" data-category="all">Все товары</button>
+        <button class="category-pill" data-category="oils">Моторные масла</button>
+        <button class="category-pill" data-category="filters">Фильтры</button>
+        <button class="category-pill" data-category="accessories">Автоаксессуары</button>
+        <button class="category-pill" data-category="fluids">Жидкости</button>
+      </div>
+
+      <!-- Product Grid -->
+      <section class="product-grid" id="product-grid-container">
+        <div style="grid-column: span 2; text-align: center; padding: 40px 0; color: var(--subtitle-color);">
+          <i class="fa-solid fa-circle-notch fa-spin" style="font-size:24px; margin-bottom:10px; color:var(--accent-color);"></i>
+          <p>Загрузка каталога...</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- VIEW 3: BOOKING WIZARD -->
+    <main id="view-booking" class="page">
+      
+      <div class="wizard-header">
+        <h2 id="wizard-title" style="font-size: 18px; text-transform:uppercase;">Выбор услуг</h2>
+        <span class="wizard-step-indicator" id="wizard-step-counter">Шаг 1 из 4</span>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="wizard-progress-bar"></div>
+      </div>
+
+      <!-- Wizard Form Container -->
+      <div class="wizard-content">
+        
+        <!-- STEP 1: SELECT SERVICES -->
+        <div class="wizard-step active" id="step-services">
+          <p class="form-helper" style="margin-bottom:8px;">Выберите необходимые услуги для вашего автомобиля:</p>
+          <div class="selectable-card-list" style="display:flex; flex-direction:column; gap:10px;" id="services-list-container">
+            <!-- Dynamic Services -->
+          </div>
+        </div>
+
+        <!-- STEP 2: CAR DETAILS -->
+        <div class="wizard-step" id="step-car">
+          <div class="form-group">
+            <label class="form-label" for="car-brand">Марка и модель автомобиля</label>
+            <input type="text" id="car-brand" class="form-control" placeholder="Например: Toyota Camry 2.5">
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label" for="oil-volume">Приблизительный объем масла (л)</label>
+            <select id="oil-volume" class="form-control">
+              <option value="not-sure">Не знаю / нужна консультация</option>
+              <option value="3-4">3.0 - 4.0 л</option>
+              <option value="4-5">4.0 - 5.0 л</option>
+              <option value="5-7">5.0 - 7.0 л</option>
+              <option value="7+">Более 7 л</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label" for="booking-comment">Комментарий к заказу (необязательно)</label>
+            <textarea id="booking-comment" class="form-control" placeholder="Укажите вязкость масла или особые пожелания..." rows="3" style="resize:none;"></textarea>
+          </div>
+        </div>
+
+        <!-- STEP 3: DATE & TIME SELECTOR -->
+        <div class="wizard-step" id="step-datetime">
+          <div class="form-group">
+            <label class="form-label">Выберите дату</label>
+            <div class="date-selector-container" id="date-slider">
+              <!-- Dynamically populated dates -->
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label">Доступное время</label>
+            <div class="time-grid" id="time-slots-container">
+              <!-- Dynamically populated slots -->
+            </div>
+            <p class="form-helper" style="margin-top:8px;"><i class="fa-solid fa-circle-info" style="color:var(--accent-color);"></i> Запись по времени гарантирует замену без очереди</p>
+          </div>
+        </div>
+
+        <!-- STEP 4: CONTACT INFO -->
+        <div class="wizard-step" id="step-contacts">
+          <div class="form-group">
+            <label class="form-label" for="contact-name">Ваше имя</label>
+            <input type="text" id="contact-name" class="form-control" placeholder="Иван">
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label" for="contact-phone">Номер телефона для связи</label>
+            <input type="tel" id="contact-phone" class="form-control" placeholder="+7 (999) 999-99-99" value="+7 (">
+          </div>
+
+          <div class="form-group" style="margin-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 15px;">
+            <h4 style="font-size:13px; margin-bottom:8px; text-transform:uppercase; color:var(--subtitle-color);">Итоговый заказ</h4>
+            <div class="glass-panel" style="padding:12px; font-size:13px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Услуги:</span><span id="summary-services" style="font-weight:700; text-align:right;">Не выбрано</span></div>
+              <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Автомобиль:</span><span id="summary-car" style="font-weight:700;">Не указан</span></div>
+              <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Дата и время:</span><span id="summary-datetime" style="font-weight:700; color:var(--secondary-accent);">Не выбрано</span></div>
+              <div style="display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px; font-weight:800; font-size:14px;">
+                <span>К оплате на месте:</span>
+                <span id="summary-price">0 ₽</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOOKING SUCCESS SCREEN -->
+        <div class="booking-success-view" id="booking-success-screen" style="display:none;">
+          <div class="success-check-circle">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h2 style="font-size:20px; font-weight:900; margin-bottom:4px; text-transform:uppercase;">Запись подтверждена!</h2>
+          <p style="font-size:13px; color:var(--subtitle-color); font-weight:500;">Ждем вас в «Магма Лукойл» в назначенное время.</p>
+          <div class="success-booking-id" id="success-id">№ MAG-77342</div>
+          
+          <div class="glass-panel" style="width:100%; padding:16px; margin: 20px 0; text-align:left; font-size:13px; display:flex; flex-direction:column; gap:8px;">
+            <div><strong>Детали визита:</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Адрес:</span><span>ул. Шеболдаева, 43</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Дата/Время:</span><span id="success-datetime" style="font-weight:700; color:var(--secondary-accent);">--:--</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--subtitle-color);">Услуги:</span><span id="success-services" style="font-weight:700; text-align:right;">--</span></div>
+            <div style="display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; font-weight:800;"><span>Сумма к оплате:</span><span id="success-price">-- ₽</span></div>
+          </div>
+
+          <div style="display:flex; gap:10px; width:100%;">
+            <button class="btn btn-primary" id="btn-success-close" style="width:100%;">
+              <i class="fa-solid fa-house"></i> На главную
+            </button>
+            <button class="btn btn-secondary" id="btn-success-route" title="Маршрут на карте" style="border-radius: var(--border-radius-md);"><i class="fa-solid fa-route"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wizard Navigation Controls -->
+      <div class="wizard-footer" id="wizard-controls">
+        <button class="btn btn-secondary" id="btn-wizard-back" style="display:none;"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="btn btn-primary" id="btn-wizard-next">Далее <i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+    </main>
+
+    <!-- VIEW 4: PROFILE & LOYALTY -->
+    <main id="view-profile" class="page">
+      
+      <!-- Virtual Loyalty Card -->
+      <div class="loyalty-card-wrapper">
+        <div class="loyalty-card">
+          <div class="loyalty-card-header">
+            <span class="loyalty-card-name">MAGMA LUKOIL</span>
+            <div class="loyalty-chip"></div>
+          </div>
+          
+          <div class="loyalty-stamps-row">
+            <div class="stamp-slot active"><i class="fa-solid fa-droplet"></i></div>
+            <div class="stamp-slot active"><i class="fa-solid fa-droplet"></i></div>
+            <div class="stamp-slot active"><i class="fa-solid fa-droplet"></i></div>
+            <div class="stamp-slot"><i class="fa-solid fa-droplet"></i></div>
+            <div class="stamp-slot active-star"><i class="fa-solid fa-gift"></i></div>
+          </div>
+          
+          <div class="loyalty-card-footer">
+            <div>
+              <div class="loyalty-progress-text">Еще 1 замена масла до бонуса</div>
+              <div class="loyalty-progress-val">3 / 4 капли</div>
+            </div>
+            <div class="loyalty-qrcode-icon" id="btn-show-qr" title="Показать QR-код карты"><i class="fa-solid fa-qrcode"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promotions -->
+      <section class="card-section">
+        <div class="section-header">
+          <h3 class="section-title"><i class="fa-solid fa-tags"></i> Акции для вас</h3>
+        </div>
+        <div class="glass-panel" style="padding:14px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:40px; height:40px; background:rgba(227,6,19,0.08); border:1px solid rgba(227,6,19,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--accent-color); font-size:18px;"><i class="fa-solid fa-gift"></i></div>
+            <div style="flex-grow:1;">
+              <h4 style="font-size:14px; font-weight:800; text-transform:uppercase;">Каждая 5-я замена масла БЕСПЛАТНО</h4>
+              <p style="font-size:11px; color:var(--subtitle-color); font-weight:500;">Копите капли в приложении. Накопив 4 капли, 5-я замена масла будет за наш счет!</p>
+            </div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:10px; display:flex; align-items:center; gap:12px;">
+            <div style="width:40px; height:40px; background:rgba(255,202,0,0.08); border:1px solid rgba(255,202,0,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--secondary-accent); font-size:18px;"><i class="fa-solid fa-percentage"></i></div>
+            <div style="flex-grow:1;">
+              <h4 style="font-size:14px; font-weight:800; text-transform:uppercase;">Скидка 10% на оригинальные фильтры</h4>
+              <p style="font-size:11px; color:var(--subtitle-color); font-weight:500;">При покупке любого моторного масла Лукойл в нашем магазине.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Client Reviews Section -->
+      <section class="card-section">
+        <div class="section-header">
+          <h3 class="section-title"><i class="fa-solid fa-star-half-stroke"></i> Отзывы клиентов (55)</h3>
+          <a href="#" class="section-link" id="btn-write-review">Написать</a>
+        </div>
+        <div class="reviews-container" id="reviews-list-container">
+          <!-- Dynamically populated reviews -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM TAB NAVIGATION -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-target="home">
+        <i class="fa-solid fa-house"></i>
+        <span>Главная</span>
+      </button>
+      <button class="nav-item" data-target="catalog">
+        <i class="fa-solid fa-oil-can"></i>
+        <span>Каталог</span>
+      </button>
+      <button class="nav-item" data-target="booking">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Запись</span>
+      </button>
+      <button class="nav-item" data-target="profile">
+        <i class="fa-solid fa-id-card"></i>
+        <span>Кабинет</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- MODAL: QR CODE FOR LOYALTY CARD -->
+  <div class="modal-overlay" id="modal-qr">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Карта лояльности</h3>
+        <button class="modal-close-btn" id="btn-close-qr"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-qrcode-container">
+          <svg class="modal-qrcode-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="white"/>
+            <rect x="10" y="10" width="20" height="20" fill="black"/>
+            <rect x="13" y="13" width="14" height="14" fill="white"/>
+            <rect x="16" y="16" width="8" height="8" fill="black"/>
+            
+            <rect x="70" y="10" width="20" height="20" fill="black"/>
+            <rect x="73" y="13" width="14" height="14" fill="white"/>
+            <rect x="76" y="16" width="8" height="8" fill="black"/>
+            
+            <rect x="10" y="70" width="20" height="20" fill="black"/>
+            <rect x="13" y="73" width="14" height="14" fill="white"/>
+            <rect x="16" y="76" width="8" height="8" fill="black"/>
+            
+            <rect x="40" y="10" width="5" height="15" fill="black"/>
+            <rect x="50" y="15" width="10" height="5" fill="black"/>
+            <rect x="45" y="25" width="5" height="10" fill="black"/>
+            <rect x="40" y="40" width="20" height="20" fill="black"/>
+            <rect x="45" y="45" width="10" height="10" fill="white"/>
+            
+            <rect x="70" y="40" width="10" height="15" fill="black"/>
+            <rect x="85" y="45" width="5" height="15" fill="black"/>
+            <rect x="75" y="70" width="15" height="5" fill="black"/>
+            <rect x="70" y="80" width="5" height="10" fill="black"/>
+            <rect x="85" y="80" width="10" height="5" fill="black"/>
+            <rect x="15" y="40" width="15" height="5" fill="black"/>
+            <rect x="25" y="50" width="5" height="15" fill="black"/>
+            <rect x="50" y="75" width="10" height="15" fill="black"/>
+          </svg>
+          <span class="modal-qrcode-desc">Покажите этот код мастеру при оплате замены масла для начисления капли.</span>
+        </div>
+        <div style="text-align:center; font-weight:800; font-size:16px;">
+          Карта № ML-982-140
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: WRITE REVIEW -->
+  <div class="modal-overlay" id="modal-review">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Оставить отзыв</h3>
+        <button class="modal-close-btn" id="btn-close-review"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" style="text-align:center;">Ваша оценка</label>
+          <div class="stars-rating-input" id="review-stars-selector" data-selected-rating="5">
+            <i class="fa-solid fa-star active" data-rating="1"></i>
+            <i class="fa-solid fa-star active" data-rating="2"></i>
+            <i class="fa-solid fa-star active" data-rating="3"></i>
+            <i class="fa-solid fa-star active" data-rating="4"></i>
+            <i class="fa-solid fa-star active" data-rating="5"></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="review-input-name">Ваше имя</label>
+          <input type="text" id="review-input-name" class="form-control" placeholder="Например: Магомед">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="review-input-text">Отзыв</label>
+          <textarea id="review-input-text" class="form-control" placeholder="Поделитесь вашим впечатлением..." rows="4" style="resize:none;"></textarea>
+        </div>
+        <button class="btn btn-primary" id="btn-submit-review" style="margin-top: 10px;">
+          <i class="fa-solid fa-paper-plane"></i> Отправить отзыв
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PRODUCT DETAILS -->
+  <div class="modal-overlay" id="modal-product">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="product-detail-title">Оригинальное масло</h3>
+        <button class="modal-close-btn" id="btn-close-product"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="product-detail-img">
+          <img id="product-detail-img-element" src="" alt="Детали товара">
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="product-detail-price" id="product-detail-price-element">-- ₽</span>
+          <span style="font-size:10px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:var(--success-color); padding:3px 8px; border-radius:4px; font-weight:800; text-transform:uppercase;" id="product-detail-availability">В наличии</span>
+        </div>
+        
+        <div>
+          <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--subtitle-color); margin-bottom:6px; letter-spacing:0.02em;">Характеристики</h4>
+          <table class="product-detail-specs-table" id="product-detail-specs-container">
+            <!-- Dynamic specs -->
+          </table>
+        </div>
+
+        <div style="font-size:12px; color:var(--subtitle-color); font-weight:500;" id="product-detail-desc">
+          Описание товара.
+        </div>
+
+        <button class="btn btn-primary" id="btn-product-order" style="margin-top:10px;">
+          <i class="fa-solid fa-cart-shopping"></i> Добавить к замене
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM WEB NOTIFICATION TOAST -->
+  <div class="web-notification" id="web-toast">
+    <i class="fa-solid fa-triangle-exclamation" id="web-toast-icon"></i>
+    <span id="web-toast-text">Сообщение</span>
+  </div>
+
+  <!-- CUSTOM WEB CONFIRMATION DIALOG -->
+  <div class="web-dialog-overlay" id="web-confirm-dialog">
+    <div class="web-dialog-card">
+      <h4 class="web-dialog-title"><i class="fa-solid fa-circle-question"></i> Подтверждение</h4>
+      <p class="web-dialog-body" id="web-confirm-text">Вы уверены?</p>
+      <div class="web-dialog-footer">
+        <button class="btn btn-secondary" id="btn-confirm-no" style="flex-grow:1; width:auto; height:auto; padding:10px 16px;">Отмена</button>
+        <button class="btn btn-primary" id="btn-confirm-yes" style="flex-grow:1;">Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Telegram WebApp SDK (for Chat ID retrieval only) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Standalone App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
+
