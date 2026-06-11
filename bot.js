@@ -12,7 +12,7 @@ const https = require('https');
 const TOKEN = process.env.BOT_TOKEN || '8867823783:AAH9zZ2Hi1cWcFGq54Fn1A807p88iTsRJ2Q';
 const PORT = process.env.PORT || 8000;
 
-let webappUrl = ''; 
+let webappUrl = 'https://zamov677.github.io/magmalucoil/'; 
 
 // Initialize Express Server (Serves the Web App Frontend)
 const app = express();
