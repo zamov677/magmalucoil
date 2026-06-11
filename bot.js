@@ -40,14 +40,14 @@ async function establishTunnel() {
     console.log(`⚙️ Создаем безопасный HTTPS-туннель через localtunnel...`);
     const tunnel = await localtunnel({ port: PORT });
     
-    webappUrl = tunnel.url;
+    const localtunnelUrl = tunnel.url;
     console.log(`\n==================================================`);
-    console.log(`✅ ВРЕМЕННЫЙ HTTPS-АДРЕС ДЛЯ TELEGRAM СОЗДАН:`);
-    console.log(`👉 ${webappUrl}`);
+    console.log(`✅ ВРЕМЕННЫЙ HTTPS-АДРЕС ДЛЯ ЛОКАЛЬНОГО ТЕСТИРОВАНИЯ:`);
+    console.log(`👉 ${localtunnelUrl}`);
     console.log(`==================================================\n`);
     
-    // Update Telegram Bot Menu Button
-    updateMenuButton(webappUrl);
+    // Always use the stable GitHub Pages URL for the bot menu button
+    updateMenuButton('https://zamov677.github.io/magmalucoil/');
 
     tunnel.on('close', () => {
       console.log('⚠️ Туннель localtunnel закрыт. Попытка переподключения через 5 секунд...');
