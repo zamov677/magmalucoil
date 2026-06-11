@@ -6,6 +6,7 @@ const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 const path = require('path');
 const localtunnel = require('localtunnel');
+const https = require('https');
 
 // Configuration
 const TOKEN = process.env.BOT_TOKEN || '8867823783:AAH9zZ2Hi1cWcFGq54Fn1A807p88iTsRJ2Q';
@@ -21,29 +22,86 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const server = app.listen(PORT, async () => {
+const server = app.listen(PORT, () => {
   console.log(`\n==================================================`);
   console.log(`🚀 СЕРВЕР ЗАПУЩЕН НА ПОРТУ ${PORT}`);
   console.log(`🔗 Локальный адрес Web App: http://localhost:${PORT}`);
+  console.log(`==================================================\n`);
   
+  // Start the bot immediately so it works via local URL or inline buttons
+  startBot();
+  
+  // Establish secure tunnel asynchronously with auto-reconnect
+  establishTunnel();
+});
+
+async function establishTunnel() {
   try {
     console.log(`⚙️ Создаем безопасный HTTPS-туннель через localtunnel...`);
     const tunnel = await localtunnel({ port: PORT });
     
     webappUrl = tunnel.url;
+    console.log(`\n==================================================`);
     console.log(`✅ ВРЕМЕННЫЙ HTTPS-АДРЕС ДЛЯ TELEGRAM СОЗДАН:`);
     console.log(`👉 ${webappUrl}`);
     console.log(`==================================================\n`);
     
-    // Start bot only after we have the HTTPS URL
-    startBot();
+    // Update Telegram Bot Menu Button
+    updateMenuButton(webappUrl);
+
+    tunnel.on('close', () => {
+      console.log('⚠️ Туннель localtunnel закрыт. Попытка переподключения через 5 секунд...');
+      setTimeout(establishTunnel, 5000);
+    });
+
+    tunnel.on('error', (err) => {
+      console.error('❌ Ошибка туннеля localtunnel:', err.message || err);
+      // Close the tunnel, which triggers 'close' and initiates reconnect
+      try { tunnel.close(); } catch (e) {}
+    });
+
   } catch (err) {
-    console.error('❌ Ошибка при создании HTTPS-туннеля:', err);
-    console.log('Попытка запустить бота с http-адресом (могут быть ошибки в Telegram)...');
-    webappUrl = `http://localhost:${PORT}`;
-    startBot();
+    console.error('❌ Не удалось создать туннель localtunnel:', err.message || err);
+    console.log('Попытка повторного подключения через 10 секунд...');
+    setTimeout(establishTunnel, 10000);
   }
-});
+}
+
+function updateMenuButton(url) {
+  const data = JSON.stringify({
+    menu_button: {
+      type: 'web_app',
+      text: 'Магма Лукойл',
+      web_app: { url: url }
+    }
+  });
+
+  const options = {
+    hostname: 'api.telegram.org',
+    port: 443,
+    path: `/bot${TOKEN}/setChatMenuButton`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(data)
+    }
+  };
+
+  const req = https.request(options, (res) => {
+    let body = '';
+    res.on('data', (chunk) => body += chunk);
+    res.on('end', () => {
+      console.log(`🤖 Кнопка меню Telegram-бота успешно настроена: ${body}`);
+    });
+  });
+
+  req.on('error', (err) => {
+    console.error('❌ Ошибка настройки кнопки меню Telegram-бота:', err.message || err);
+  });
+
+  req.write(data);
+  req.end();
+}
 
 function startBot() {
   try {
@@ -51,6 +109,16 @@ function startBot() {
 
     console.log(`🤖 Бот успешно запущен в режиме Long Polling!`);
     console.log(`👉 Откройте Telegram и напишите боту команду /start`);
+
+    // Handle polling errors gracefully without crashing process
+    bot.on('polling_error', (error) => {
+      // Just log briefly, socket hang ups are common and resolved automatically by the SDK
+      if (error.message && error.message.includes('socket hang up')) {
+        console.log('⚠️ [Telegram Polling] Временная задержка соединения с серверами TG (socket hang up)');
+      } else {
+        console.error('⚠️ [Telegram Polling Error]:', error.message || error);
+      }
+    });
 
     // Handle /start command
     bot.onText(/\/start/, (msg) => {
